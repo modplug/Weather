@@ -1,8 +1,9 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { TouchableOpacity } from "react-native";
 import { SettingsProvider } from "../contexts/SettingsProvider";
 
 export {
@@ -56,8 +57,21 @@ function RootLayoutNav() {
           headerBackTitleVisible: false,
           headerBackVisible: true,
           headerTintColor: "black",
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ padding: 4 }}
+              onPress={() => router.push("/settings")}
+            >
+              <FontAwesome name="cog" size={24} color="black" />
+            </TouchableOpacity>
+          ),
         }}
-      ></Stack>
+      >
+        <Stack.Screen
+          options={{ presentation: "modal", headerShown: false }}
+          name="settings"
+        />
+      </Stack>
     </SettingsProvider>
   );
 }
