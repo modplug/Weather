@@ -1,6 +1,4 @@
-// useReverseGeocoding.test.ts
-
-import { cleanup, renderHook } from "@testing-library/react-hooks";
+import { cleanup, renderHook, waitFor } from "@testing-library/react-native";
 import * as ExpoLocation from "expo-location";
 import { useReverseGeocoding } from "../useReverseGeocoding";
 
@@ -30,11 +28,12 @@ describe("useReverseGeocoding", () => {
       mockGeocodedLocation,
     ]);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useReverseGeocoding(mockLocation)
-    );
+    const { result } = renderHook(() => useReverseGeocoding(mockLocation));
 
-    await waitForNextUpdate();
+    const initialValue = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(initialValue);
+    });
 
     expect(result.current.geocodedLocation).toEqual(mockGeocodedLocation);
     expect(result.current.error).toBeNull();
@@ -50,14 +49,12 @@ describe("useReverseGeocoding", () => {
       new Error("Failed to fetch location")
     );
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useReverseGeocoding(mockLocation)
-    );
+    const { result } = renderHook(() => useReverseGeocoding(mockLocation));
 
-    await waitForNextUpdate();
-
-    expect(result.current.geocodedLocation).toBeNull();
-    expect(result.current.error).toEqual("Failed to fetch location");
+    await waitFor(() => {
+      expect(result.current.geocodedLocation).toBeNull();
+      expect(result.current.error).toEqual("Failed to fetch location");
+    });
   });
 
   it("runs again when latitude or longitude is changed", async () => {
@@ -71,7 +68,7 @@ describe("useReverseGeocoding", () => {
       longitude: -118.2437,
     };
 
-    const { result, rerender, waitForNextUpdate } = renderHook(
+    const { result, rerender } = renderHook(
       ({ location }) => useReverseGeocoding(location),
       { initialProps: { location: initialLocation } }
     );
@@ -88,13 +85,18 @@ describe("useReverseGeocoding", () => {
       mockGeocodedLocation,
     ]);
 
-    await waitForNextUpdate();
+    const initialValue = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(initialValue);
+    });
 
     (ExpoLocation.reverseGeocodeAsync as jest.Mock).mockClear();
 
     rerender({ location: newLocation });
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current).not.toBe(initialValue);
+    });
 
     expect(ExpoLocation.reverseGeocodeAsync).toHaveBeenCalledTimes(1);
     expect(ExpoLocation.reverseGeocodeAsync).toHaveBeenCalledWith(newLocation);
@@ -106,11 +108,11 @@ describe("useReverseGeocoding", () => {
       longitude: -122.4194,
     };
 
-    const { waitForNextUpdate } = renderHook(() =>
-      useReverseGeocoding(location)
-    );
+    const { result } = renderHook(() => useReverseGeocoding(location));
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current).not.toBe(location);
+    });
 
     expect(ExpoLocation.reverseGeocodeAsync).toHaveBeenCalledTimes(1);
     expect(ExpoLocation.reverseGeocodeAsync).toHaveBeenCalledWith(location);
