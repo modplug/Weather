@@ -1,20 +1,22 @@
 import { WeatherInfoItem, WeatherInfoType } from "@/components/WeatherInfoItem";
+import { WeeklyForecast } from "@/components/WeeklyForecast";
 import { colors } from "@/constants/colors";
-import { useLocalSearchParams } from "expo-router";
-import { useContext } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { WeeklyForecast } from "../../components/WeeklyForecast";
-import { SettingsContext } from "../../contexts/SettingsContext";
-import { useReverseGeocoding } from "../../hooks/useReverseGeocoding";
-import { useWeatherForLocation } from "../../hooks/useWeatherForLocation";
-import { toLongDate } from "../../utils/dateUtils";
+import { SettingsContext } from "@/contexts/SettingsContext";
+import { useReverseGeocoding } from "@/hooks/useReverseGeocoding";
+import { useWeatherDetailsAnimations } from "@/hooks/useWeatherDetailsAnimations";
+import { useWeatherForLocation } from "@/hooks/useWeatherForLocation";
+import { toLongDate } from "@/utils/dateUtils";
 import {
   TemperatureUnit,
   generateWeatherSummary,
   getCurrentWeatherStatus,
   getTemperatureForUnit,
   getValuesFromSeries,
-} from "../../utils/weatherUtils";
+} from "@/utils/weatherUtils";
+import { useLocalSearchParams } from "expo-router";
+import { useContext } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import Animated from "react-native-reanimated";
 
 export type WeatherInfoProps = {
   lat: any;
@@ -46,6 +48,7 @@ const WeatherDetails = () => {
     error: weatherError,
   } = useWeatherForLocation(location);
 
+  // Add loading state and error state at some point
   if (geoCodingError || weatherError) {
     return (
       <View style={styles.container}>
@@ -74,27 +77,54 @@ const WeatherDetails = () => {
   const date = new Date(serie?.time ?? new Date());
   const longDate = toLongDate(date);
 
+  const {
+    animatedDateStyle,
+    animatedTemperatureStyle,
+    animatedTemperatureUnitStyle,
+    animatedDailySummaryHeaderStyle,
+    animatedDailySummaryStyle,
+    animatedInfoPanelStyle,
+  } = useWeatherDetailsAnimations();
+
   return (
     <ScrollView style={[styles.container, { backgroundColor: color }]}>
       <View>
         <View style={styles.centerContainer}>
           <Text style={styles.place}>{geocodedLocation?.city}</Text>
           <View style={styles.date}>
-            <Text style={[{ color: color }]}>{longDate}</Text>
+            <Animated.Text style={[{ color: color }, animatedDateStyle]}>
+              {longDate}
+            </Animated.Text>
           </View>
           <Text style={{ margin: 5 }}>{weatherStatus}</Text>
           <View style={styles.temperatureContainer}>
-            <Text style={[styles.temperatureText]}>
+            <Animated.Text
+              style={[styles.temperatureText, animatedTemperatureStyle]}
+            >
               {getTemperatureForUnit(values.currentTemperature, selectedUnit)}
-            </Text>
-            <Text style={[styles.temperatureUnitText]}>{selectedUnit}</Text>
+            </Animated.Text>
+            <Animated.Text
+              style={[styles.temperatureUnitText, animatedTemperatureUnitStyle]}
+            >
+              {selectedUnit}
+            </Animated.Text>
           </View>
         </View>
         <View style={styles.dailySummaryContainer}>
-          <Text style={[styles.dailySummaryHeader]}>Daily summary</Text>
-          <Text style={[styles.dailySummaryText]}>{weatherSummary}</Text>
+          <Animated.Text
+            style={[styles.dailySummaryHeader, animatedDailySummaryHeaderStyle]}
+          >
+            Daily summary
+          </Animated.Text>
+          <Animated.Text
+            style={[styles.dailySummaryText, animatedDailySummaryStyle]}
+          >
+            {weatherSummary}
+          </Animated.Text>
         </View>
-        <View style={[styles.weatherInfoPanel]}>
+        <Animated.View
+          style={[styles.weatherInfoPanel, animatedInfoPanelStyle]}
+        >
           <WeatherInfoItem
             color={color}
             infoType={WeatherInfoType.Wind}
@@ -115,7 +145,7 @@ const WeatherDetails = () => {
             value={`${values.pressure} hPa`}
             text="Pressure"
           />
-        </View>
+        </Animated.View>
 
         <WeeklyForecast unit={selectedUnit} timeseries={timeseries} />
       </View>

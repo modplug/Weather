@@ -1,7 +1,16 @@
 import { Series } from "@/lib/yr/types";
-import { toShortDate } from "@/utils/dateUtils";
-import { TemperatureUnit, getTemperatureForUnit } from "@/utils/weatherUtils";
+import { useContext, useEffect } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import { SettingsContext } from "../contexts/SettingsContext";
+import { toShortDate } from "../utils/dateUtils";
+import { TemperatureUnit, getTemperatureForUnit } from "../utils/weatherUtils";
 
 export type WeeklyForecastItemProps = {
   serie: Series;
@@ -17,6 +26,41 @@ export const WeeklyForecastItem = ({
   const date = new Date(serie.time);
   const formattedDate = toShortDate(date);
   const imageUrl = `https://raw.githubusercontent.com/metno/weathericons/main/weather/png/${serie.data.next_12_hours?.summary.symbol_code}.png`;
+  const translationYAnimation = useSharedValue(100);
+  const opacityAnimation = useSharedValue(0);
+  const settings = useContext(SettingsContext);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translationYAnimation.value }],
+      opacity: opacityAnimation.value,
+    };
+  });
+
+  const resetSharedValues = () => {
+    translationYAnimation.value = 100;
+    opacityAnimation.value = 0;
+  };
+
+  const initialDelay = 1000;
+
+  useEffect(() => {
+    const delay = index * 100 + initialDelay;
+    resetSharedValues();
+
+    translationYAnimation.value = withDelay(
+      delay,
+      withSpring(0, {
+        mass: 1,
+        damping: 20,
+        stiffness: 200,
+        overshootClamping: false,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 2,
+      })
+    );
+    opacityAnimation.value = withDelay(delay, withTiming(1, { duration: 200 }));
+  }, [settings.unit]);
 
   const key = serie.time ?? Math.random().toString();
   const temperature = getTemperatureForUnit(
@@ -26,7 +70,10 @@ export const WeeklyForecastItem = ({
 
   return (
     <View style={{ paddingVertical: 5 }}>
-      <View style={[styles.weeklyForecastItem]} key={key}>
+      <Animated.View
+        style={[styles.weeklyForecastItem, animatedStyle]}
+        key={key}
+      >
         <Text>
           {temperature}
           {unit}
@@ -40,7 +87,7 @@ export const WeeklyForecastItem = ({
         />
 
         <Text>{formattedDate}</Text>
-      </View>
+      </Animated.View>
     </View>
   );
 };

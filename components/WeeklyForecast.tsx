@@ -1,6 +1,8 @@
+import { useWeatherDetailsAnimations } from "@/hooks/useWeatherDetailsAnimations";
 import { Series } from "@/lib/yr/types";
 import { TemperatureUnit } from "@/utils/weatherUtils";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
+import Animated from "react-native-reanimated";
 import { WeeklyForecastItem } from "./WeeklyForecastItem";
 
 export type WeeklyForecastProps = {
@@ -18,9 +20,15 @@ export const WeeklyForecast = ({ timeseries, unit }: WeeklyForecastProps) => {
     return date.getHours() === 13;
   });
 
+  const { animatedWeeklyForecastStyle } = useWeatherDetailsAnimations();
+
   return (
     <View style={styles.weeklyForecastContainer}>
-      <Text style={[{ fontWeight: "700" }]}>Weekly forecast</Text>
+      <Animated.Text
+        style={[{ fontWeight: "700" }, animatedWeeklyForecastStyle]}
+      >
+        Weekly forecast
+      </Animated.Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
