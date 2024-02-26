@@ -4,6 +4,7 @@ import { useReverseGeocoding } from "@/hooks/useReverseGeocoding";
 import { useWeatherForLocation } from "@/hooks/useWeatherForLocation";
 import { Coordinates } from "@/types/globals";
 import { TemperatureUnit, getTemperatureForUnit } from "@/utils/weatherUtils";
+import { router } from "expo-router";
 import { useContext } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -32,7 +33,16 @@ export const WeatherListItem = ({ coords, index }: WeatherCardProps) => {
 
   return (
     <TouchableOpacity
-      onPress={() => {}}
+      onPress={() => {
+        router.push({
+          pathname: "/details/",
+          params: {
+            lat: coords.latitude,
+            lon: coords.longitude,
+            color: color,
+          },
+        });
+      }}
       style={[{ backgroundColor: color }, styles.touchableOpacity]}
     >
       <View style={styles.viewContent}>
