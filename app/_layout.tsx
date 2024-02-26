@@ -21,6 +21,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    SFCompact: require("../assets/fonts/SF-Compact-Regular.ttf"),
     ...FontAwesome.font,
   });
 
@@ -45,7 +46,18 @@ export default function RootLayout() {
 function RootLayoutNav() {
   return (
     <SettingsProvider>
-      <Stack></Stack>
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: "transparent" },
+          contentStyle: { backgroundColor: "beige" },
+          headerTitle: "",
+          headerShown: true,
+          headerTransparent: true,
+          headerBackTitleVisible: false,
+          headerBackVisible: true,
+          headerTintColor: "black",
+        }}
+      ></Stack>
     </SettingsProvider>
   );
 }
