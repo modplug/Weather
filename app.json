@@ -38,7 +38,8 @@
         "origin": false
       },
       "eas": {
-        "projectId": "262c5f6b-7bf8-4240-b5ba-c5e7ff91ebe8"
+        "projectId": "262c5f6b-7bf8-4240-b5ba-c5e7ff91ebe8",
+        "owner": "blingablong_org"
       }
     }
   }
