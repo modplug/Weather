@@ -24,9 +24,3 @@ export const getEnumKey = <TKey, TValue>(
     (k) => enumType[k as keyof TKey] === enumValue
   );
 };
-
-enum test {
-  "d",
-  "f",
-  "h",
-}

@@ -12,6 +12,8 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
     TemperatureUnit.Celsius
   );
 
+  const [loading, setLoading] = useState(true); // Add a loading state
+
   const isValidKey = (key: string): key is keyof typeof TemperatureUnit => {
     return key in TemperatureUnit;
   };
@@ -29,6 +31,7 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
           setTemperatureUnit(enumValue);
         }
       }
+      setLoading(false); // Set loading to false after the data is loaded
     })();
   }, []);
 
@@ -61,6 +64,10 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
       console.error("Error setting temperature unit", e);
     }
   };
+
+  if (loading) {
+    return null; // Render nothing while loading
+  }
 
   return (
     <SettingsContext.Provider value={{ unit: temperatureUnit, setUnit }}>
