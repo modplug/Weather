@@ -1,10 +1,10 @@
 # Weather App
 
-This project is a weather application built with React and TypeScript. It provides real-time weather information based on the user's location.
+This project is a weather application built with React native and TypeScript. It provides real-time weather information based on the user's location.
 
 ## Intention
 
-The intention of this project is to provide a simple and intuitive interface for users to get weather information. It also serves as a demonstration of a modern React application built with TypeScript, showcasing best practices and modern development tools.
+The intention of this project is to provide a simple and intuitive interface for users to get weather information. It also serves as a demonstration of a modern React native application built with TypeScript, showcasing best practices and modern development tools.
 
 ## Getting Started
 
@@ -23,7 +23,7 @@ What things you need to install the software and how to install them:
 A step by step series of examples that tell you how to get a development environment running:
 
 1. Clone the repository:
-   git clone https://github.com/yourusername/your-repo-name.git
+   git clone https://github.com/modplug/Weather.git
 
 2. Navigate into the project directory:
    cd your-repo-name
