@@ -1,4 +1,3 @@
-import { colors } from "@/constants/colors";
 import { SettingsContext } from "@/contexts/SettingsContext";
 import { useReverseGeocoding } from "@/hooks/useReverseGeocoding";
 import { useWeatherForLocation } from "@/hooks/useWeatherForLocation";
@@ -7,6 +6,7 @@ import { TemperatureUnit, getTemperatureForUnit } from "@/utils/weatherUtils";
 import { router } from "expo-router";
 import { useContext } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { COLORS } from "../constants/constants";
 
 export type WeatherCardProps = {
   coords: Coordinates;
@@ -20,7 +20,7 @@ export const WeatherListItem = ({ coords, index }: WeatherCardProps) => {
   });
   const settings = useContext(SettingsContext);
   const unit = settings?.unit ?? TemperatureUnit.Celsius;
-  const color = colors[index % colors.length];
+  const color = COLORS[index % COLORS.length];
   const imageUrl = `https://raw.githubusercontent.com/metno/weathericons/main/weather/png/${weatherData?.properties?.timeseries[0]?.data.next_1_hours?.summary.symbol_code}.png`;
 
   const temperature = getTemperatureForUnit(

@@ -1,6 +1,6 @@
 import { Coordinates } from "../types/globals";
 
-export const defaultLocations: Coordinates[] = [
+export const DEFAULT_LOCATIONS: Coordinates[] = [
   {
     latitude: 40.7128,
     longitude: -74.006,
@@ -21,4 +21,13 @@ export const defaultLocations: Coordinates[] = [
     latitude: -33.8688,
     longitude: 151.2093,
   },
-];
+] as const;
+
+export const COLORS = [
+  "#42C6FF",
+  "#FF4242",
+  "#FF42FF",
+  "#FF9142",
+  "#FFD842",
+  "#42FFC5",
+] as const;

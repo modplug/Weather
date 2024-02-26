@@ -1,4 +1,7 @@
+import { SettingsContext } from "@/contexts/SettingsContext";
 import { Series } from "@/lib/yr/types";
+import { toShortDate } from "@/utils/dateUtils";
+import { TemperatureUnit, getTemperatureForUnit } from "@/utils/weatherUtils";
 import { useContext, useEffect } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import Animated, {
@@ -8,9 +11,6 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { SettingsContext } from "../contexts/SettingsContext";
-import { toShortDate } from "../utils/dateUtils";
-import { TemperatureUnit, getTemperatureForUnit } from "../utils/weatherUtils";
 
 export type WeeklyForecastItemProps = {
   serie: Series;

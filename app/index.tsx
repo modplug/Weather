@@ -1,5 +1,5 @@
 import { WeatherListItem } from "@/components/WeatherListItem";
-import { defaultLocations } from "@/constants/defaultLocations";
+import { DEFAULT_LOCATIONS } from "@/constants/constants";
 import { Coordinates } from "@/types/globals";
 import * as ExpoLocation from "expo-location";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import {
 } from "react-native";
 
 export const MainScreen = () => {
-  const [locations, setLocations] = useState<Coordinates[]>(defaultLocations);
+  const [locations, setLocations] = useState<Coordinates[]>(DEFAULT_LOCATIONS);
   const renderItem = (item: Coordinates, index: number) => {
     return <WeatherListItem coords={item} index={index} />;
   };

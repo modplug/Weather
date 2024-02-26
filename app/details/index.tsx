@@ -1,6 +1,6 @@
 import { WeatherInfoItem, WeatherInfoType } from "@/components/WeatherInfoItem";
 import { WeeklyForecast } from "@/components/WeeklyForecast";
-import { colors } from "@/constants/colors";
+import { COLORS } from "@/constants/constants";
 import { SettingsContext } from "@/contexts/SettingsContext";
 import { useReverseGeocoding } from "@/hooks/useReverseGeocoding";
 import { useWeatherDetailsAnimations } from "@/hooks/useWeatherDetailsAnimations";
@@ -31,7 +31,7 @@ const WeatherDetails = () => {
   const lon = Number.parseFloat(queryParams.lon as string);
 
   const generateRandomColor = () => {
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    const randomColor = COLORS[Math.floor(Math.random() * COLORS.length)];
     return randomColor;
   };
   const color = queryParams.color || generateRandomColor();
