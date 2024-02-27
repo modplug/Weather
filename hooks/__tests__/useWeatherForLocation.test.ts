@@ -1,6 +1,6 @@
 // useWeatherForLocation.test.ts
 
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook, waitFor } from "@testing-library/react-native";
 import { WeatherError, useWeatherForLocation } from "../useWeatherForLocation";
 
 // Mock the global fetch function
@@ -25,11 +25,12 @@ describe("useWeatherForLocation", () => {
       json: () => Promise.resolve(mockWeatherData),
     });
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useWeatherForLocation(mockLocation)
-    );
+    const { result } = renderHook(() => useWeatherForLocation(mockLocation));
 
-    await waitForNextUpdate();
+    const initialValue = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(initialValue);
+    });
 
     expect(result.current.weatherData).toEqual(mockWeatherData);
     expect(result.current.error).toBeNull();
@@ -46,11 +47,12 @@ describe("useWeatherForLocation", () => {
 
     (fetch as jest.Mock).mockRejectedValue(new Error(mockError.message));
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useWeatherForLocation(mockLocation)
-    );
+    const { result } = renderHook(() => useWeatherForLocation(mockLocation));
 
-    await waitForNextUpdate();
+    const initialValue = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(initialValue);
+    });
 
     expect(result.current.weatherData).toBeNull();
     expect(result.current.error).toEqual(mockError);
@@ -68,18 +70,31 @@ describe("useWeatherForLocation", () => {
       longitude: -118.2437,
     };
 
-    const { rerender, waitForNextUpdate } = renderHook(
+    const mockWeatherData = {
+      weather: "sunny",
+    };
+
+    const { rerender, result } = renderHook(
       ({ location }) => useWeatherForLocation(location),
       { initialProps: { location: initialLocation } }
     );
 
-    await waitForNextUpdate();
+    const initialValue = initialLocation;
+    await waitFor(() => {
+      expect(result.current).not.toBe(initialValue);
+    });
 
     (fetch as jest.Mock).mockClear();
 
+    (fetch as jest.Mock).mockResolvedValue({
+      json: () => Promise.resolve(mockWeatherData),
+    });
+
     rerender({ location: newLocation });
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.weatherData).toBe(mockWeatherData);
+    });
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
